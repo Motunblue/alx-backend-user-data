@@ -56,11 +56,13 @@ def set_up():
     path_list = [
         '/api/v1/status/',
         '/api/v1/unauthorized/',
-        '/api/v1/forbidden/'
+        '/api/v1/forbidden/',
+        "/api/v1/auth_session/login/"
         ]
     if not auth.require_auth(request.path, path_list):
         return
-    if not auth.authorization_header(request):
+    sess_cookie = auth.session_cookie(request)
+    if not auth.authorization_header(request) and not sess_cookie:
         abort(401)
     if not auth.current_user(request):
         abort(403)

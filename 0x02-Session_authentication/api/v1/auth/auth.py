@@ -2,6 +2,7 @@
 """ Module of Auth
 """
 from typing import List, TypeVar
+import os
 
 
 class Auth:
@@ -42,3 +43,11 @@ class Auth:
         if request is None:
             return None
         return request.headers.get('Authorization', None)
+
+    def session_cookie(self, request=None):
+        """ Session Cookie
+        """
+        if request == None:
+            return None
+        cookie_name = os.getenv('SESSION_NAME')
+        return request.cookies.get(cookie_name)
