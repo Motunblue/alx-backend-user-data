@@ -3,7 +3,7 @@
 """
 from models.user import User
 from api.v1.views import app_views
-from flask import jsonify, request
+from flask import jsonify, request, abort
 import os
 
 
@@ -34,3 +34,16 @@ def auth_session_login():
         res = jsonify(user.to_json())
         res.set_cookie(os.getenv('SESSION_NAME'), sess_id)
         return res
+
+
+@app_views.route('/auth_session/logout',
+                 methods=['DELETE'], strict_slashes=False)
+def auth_session_logout():
+    """ GET /api/v1/auth_session/logout
+    Desc: Logout a user session
+    """
+    from api.v1.app import auth
+    if auth.destroy_session(request):
+        return jsonify({}), 200
+    else:
+        abort(404)
