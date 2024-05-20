@@ -15,11 +15,12 @@ class Auth:
             return True
         if len(excluded_paths) == 0:
             return True
+        path = path.strip()
         if path[-1] == "*":
             for p in excluded_paths:
                 if p.startswith(path[:-1]):
                     return True
-        if path.strip()[-1] != "/":
+        if path[-1] != "/":
             path = path + "/"
         if path not in excluded_paths:
             return True
