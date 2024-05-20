@@ -45,7 +45,7 @@ class BasicAuth(Auth):
             return None, None
         if decoded_base64_authorization_header.find(":") == -1:
             return None, None
-        usr, pwd = decoded_base64_authorization_header.split(":")
+        usr, _, pwd = decoded_base64_authorization_header.partition(":")
         return usr, pwd
 
     def user_object_from_credentials(

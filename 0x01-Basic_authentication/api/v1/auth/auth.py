@@ -11,11 +11,15 @@ class Auth:
         """ Check if path require Authentification
         Return: True if path not in excluded_path else False
         """
-        if not path:
+        if not path or excluded_paths is None:
             return True
         if len(excluded_paths) == 0:
             return True
-        if path[-1] != '/':
+        if path[-1] == "*":
+            for p in excluded_paths:
+                if p.startswith(path[:-1]):
+                    return True
+        if path.strip()[-1] != "/":
             path = path + "/"
         if path not in excluded_paths:
             return True
