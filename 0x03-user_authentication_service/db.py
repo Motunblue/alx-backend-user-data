@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """DB module
 """
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, tuple_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 
 from user import Base, User
 
@@ -37,3 +39,30 @@ class DB:
         self._session.add(user)
         self._session.commit()
         return user
+
+    def find_user_by(self, **kwargs) -> User:
+        """ Find user
+        """
+        cols, values = [], []
+        for k, v in kwargs.items():
+            if hasattr(User, k):
+                cols.append(getattr(User, k))
+                values.append(v)
+            else:
+                raise InvalidRequestError()
+        user = self._session.query(User).filter(
+            tuple_(*cols).in_([tuple(values)])).first()
+        if not user:
+            raise NoResultFound()
+        return user
+
+    def update_user(self, user_id: int, **kwargs):
+        """ Update User
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+            for k, v in kwargs.items():
+                setattr(user, k, v)
+            self._session.commit()
+        except NoResultFound:
+            raise ValueError()
