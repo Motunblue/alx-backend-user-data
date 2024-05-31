@@ -49,7 +49,7 @@ class Auth:
                                   user.hashed_password)
         except NoResultFound:
             return False
-        
+
     def create_session(self, email: str) -> str:
         """ Create a new Session
         """
@@ -60,4 +60,3 @@ class Auth:
             return session_id
         except NoResultFound:
             return None
-
